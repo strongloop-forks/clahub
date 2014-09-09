@@ -1,6 +1,12 @@
-<div class="hero-unit">
+<div>
   <%= image_tag 'node-expertise.png', class: 'logo' %>
-  <h2>StrongLoop Contributor License Agreements</h2>
-  <p><a class="btn btn-primary btn-large" href="/auth/github">Sign in with GitHub to get started &raquo;</a></p>
-  <p>Or, read more about <%= link_to 'what CLAs are and why you might use one', page_path('why_cla') %>&hellip;</p>
+  <h3>
+    Thank you for your interest in contributing to one of the open source
+    projects administered by StrongLoop.
+  </h3>
+  <% if signed_in? %>
+    <%= link_to 'My agreements and signatures', agreements_path, class: 'btn btn-success btn-large' %>
+  <% else %>
+    <p><a class="btn btn-primary btn-large" href="/auth/github">Sign in with GitHub to get started &raquo;</a></p>
+  <% end %>
 </div>
