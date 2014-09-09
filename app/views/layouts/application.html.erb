@@ -24,13 +24,14 @@
 
   <footer class="row">
     <ul class="footer-links">
-      <li class="block">&copy; Jason Morrison 2012.  All Rights Reserved.</li>
+      <li class="block">&copy; 2014 StrongLoop, Inc., powered by <a href="https://github.com/clahub/clahub">CLAHub</a></li>
+      <li class="block">CLAHub: &copy; Jason Morrison 2012.  All Rights Reserved.</li>
       <li class="block">CLAHub is a trademark of Jason Morrison.</li>
-      <li><a href="https://github.com/clahub/clahub">Source Code and Issues</a></li>
+      <li><a href="https://github.com/strongloop-forks/clahub">Source Code and Issues</a></li>
       <span class="divider">&bullet;</span>
-      <%= nav_link_to 'Privacy Policy', page_path('privacy') %>
+      <%= nav_link_to 'Privacy Policy', 'http://strongloop.com/privacy-policy/' %>
       <span class="divider">&bullet;</span>
-      <%= nav_link_to 'Terms of Service', page_path('terms') %>
+      <%= nav_link_to 'Terms of Service', 'http://strongloop.com/terms-of-use/' %>
       <% if signed_in? %>
         <span class="divider">&bullet;</span>
         <%= nav_link_to 'Sign Out', sign_out_path %>
