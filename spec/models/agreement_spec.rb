@@ -114,8 +114,8 @@ describe Agreement do
     non_owner = build(:user)
     agreement = build(:agreement, user: owner)
 
-    expect(agreement.owned_by?(owner)).to be_true
-    expect(agreement.owned_by?(non_owner)).to be_false
+    expect(agreement.owned_by?(owner)).to be_truthy
+    expect(agreement.owned_by?(non_owner)).to be_falsey
   end
 
   it "knows who signed it" do
@@ -124,8 +124,8 @@ describe Agreement do
     agreement = create(:agreement)
     create(:signature, agreement: agreement, user: signee)
 
-    expect(agreement.signed_by?(signee)).to be_true
-    expect(agreement.signed_by?(non_signee)).to be_false
+    expect(agreement.signed_by?(signee)).to be_truthy
+    expect(agreement.signed_by?(non_signee)).to be_falsey
   end
 
   it "checks on open pull reqs for its repo when told" do
