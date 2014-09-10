@@ -78,6 +78,27 @@ module GithubMockHelpers
     stub_request(:get, url).to_return(status: 200, body: json_response)
   end
 
+  def mock_github_repo_collaborator(options = {})
+    assert_options(options, :owner, :repo, :user)
+    options[:oauth_token] ||= oauth_token_for(options[:user])
+    set_default_github_oauth_options(options)
+
+    json_response = options[:commits].to_json
+    url = "https://api.github.com/repos/#{options[:owner]}/#{options[:repo]}/collaborators/#{options[:user]}?access_token=#{options[:oauth_token]}"
+    stub_request(:get, url).to_return(status: 204)
+  end
+
+  def mock_github_repo_not_collaborator(options = {})
+    assert_options(options, :owner, :repo, :user)
+    set_default_github_oauth_options(options)
+    options[:oauth_token] ||= options[:credentials][:token]
+    #||= oauth_token_for(options[:user])
+
+    json_response = options[:commits].to_json
+    url = "https://api.github.com/repos/#{options[:owner]}/#{options[:repo]}/collaborators/#{options[:user]}?access_token=#{options[:oauth_token]}"
+    stub_request(:get, url).to_return(status: 404)
+  end
+
   def mock_github_user_orgs(options = {})
     assert_options(options, :oauth_token, :orgs)
     assert_options_array(options[:orgs], :login)

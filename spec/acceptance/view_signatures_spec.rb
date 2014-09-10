@@ -60,6 +60,7 @@ feature 'Viewing signatures for an agreement' do
     github_uid ||= github_uid_for_nickname(github_nickname)
 
     mock_github_limited_oauth(info: { nickname: github_nickname }, uid: github_uid)
+    mock_github_repo_not_collaborator(owner: 'oswald_owner', repo: 'the_project', user: github_nickname)
     visit '/sign_out'
     visit '/agreements/oswald_owner/the_project'
     click_link 'Sign in with GitHub to agree to this CLA'

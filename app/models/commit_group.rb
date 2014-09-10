@@ -115,6 +115,7 @@ class CommitGroup
 
   def signed_agreement?(candidate)
     return false if candidate.nil?
+    return true if github_repos.collaborator?(@repo_owner_name, @repo_name, candidate)
 
     Signature.exists?({
       user_id: candidate.id,

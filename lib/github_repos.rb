@@ -19,6 +19,10 @@ class GithubRepos
     [user_repos, org_repos].flatten
   end
 
+  def collaborator?(user_name, repo_name, user)
+    @github.repos.collaborators.collaborator?(user_name, repo_name, user.nickname)
+  end
+
   def create_hook(user_name, repo_name, hook_inputs)
     begin
       @github.repos.hooks.create(user_name, repo_name, hook_inputs)

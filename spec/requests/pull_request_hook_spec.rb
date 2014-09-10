@@ -13,6 +13,7 @@ describe 'receiving github repo "PullRequest" webhook callbacks' do
   end
 
   it 'correctly re-checks many commits in response to a pull request synchronization' do
+    mock_github_repo_not_collaborator(oauth_token: token, owner: 'the_owner', repo: 'mangostickyrice', user: 'jasonm')
     owner = create(:user, nickname: 'the_owner', oauth_token: token)
     author1 = create(:user, email: 'jasonm@gmail.com', nickname: 'jasonm')
     agreement = create(:agreement, user: owner, repo_name: 'mangostickyrice')
