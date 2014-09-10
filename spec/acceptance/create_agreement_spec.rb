@@ -35,6 +35,8 @@ feature "Creating a CLA for a repo" do
     visit '/'
     click_link 'Sign in with GitHub to get started'
     page.should have_content('Welcome, Jason Morrison (jasonm)!')
+
+    visit '/agreements/new'
     page.should have_content("Choose a project and your agreement")
     page.should have_content("jasonm/alpha")
     page.should have_content("jasonm/beta")
@@ -95,6 +97,8 @@ feature "Creating a CLA for a repo" do
     visit '/'
     click_link 'Sign in with GitHub to get started'
     page.should have_content('Welcome, Jason Morrison (jasonm)!')
+
+    visit '/agreements/new'
     page.should have_content("Choose a project and your agreement")
     page.should have_content("my-adminned-org/chi")
     page.should have_content("my-adminned-org/delta")
@@ -119,6 +123,7 @@ feature "Creating a CLA for a repo" do
   scenario "Sign up for commit notifications when an agreement is created" do
     visit '/'
     click_link 'Sign in with GitHub to get started'
+    visit '/agreements/new'
 
     select 'jasonm/beta', from: 'user-name-repo-name'
     fill_in :agreement, with: 'As a contributor, I assign copyright to the organization.'
@@ -139,6 +144,7 @@ feature "Creating a CLA for a repo" do
   scenario "Encourage owner to include a link to this CLA from your CONTRIBUTING file" do
     visit '/'
     click_link 'Sign in with GitHub to get started'
+    visit '/agreements/new'
 
     select 'jasonm/beta', from: 'user-name-repo-name'
     fill_in :agreement, with: 'As a contributor, I assign copyright to the organization.'
@@ -155,6 +161,7 @@ feature "Creating a CLA for a repo" do
   scenario "Preview markdown formatting for your agreement text", js: true do
     visit '/'
     click_link 'Sign in with GitHub to get started'
+    visit '/agreements/new'
 
     select_chosen 'jasonm/beta', from: 'select#user-name-repo-name'
 
@@ -176,6 +183,7 @@ feature "Creating a CLA for a repo" do
     background do
       visit '/'
       click_link 'Sign in with GitHub to get started'
+      visit '/agreements/new'
     end
 
     scenario "Require agreement text to be entered" do
@@ -219,6 +227,7 @@ feature "Creating a CLA for a repo" do
 
     visit '/'
     click_link 'Sign in with GitHub to get started'
+    visit '/agreements/new'
 
     select_chosen 'jasonm/beta', from: 'select#user-name-repo-name'
     fill_in :agreement, with: 'As a contributor, I assign copyright to the organization.'
