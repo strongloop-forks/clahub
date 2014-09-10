@@ -60,6 +60,7 @@ class PushStatusChecker
 
   def signed_agreement?(candidate)
     return false if candidate.nil?
+    return true if GithubRepos.new(repo_agreement.user).collaborator?(@push.user_name, @push.repo_name, candidate)
 
     Signature.exists?({
       user_id: candidate.id,

@@ -23,6 +23,7 @@ describe 'receiving github repo webhook callbacks' do
   end
 
   it 'gets a push with 1 commit, where the author has agreed, and marks the commit as success' do
+    mock_github_repo_not_collaborator(oauth_token: token, owner: 'jasonm', repo: 'mangostickyrice', user: 'jasonm')
     user = create(:user, email: 'jason@gmail.com', nickname: 'jasonm', oauth_token: token)
     agreement = create(:agreement, user: user, repo_name: 'mangostickyrice')
     create(:signature, user: user, agreement: agreement)
@@ -44,6 +45,7 @@ describe 'receiving github repo webhook callbacks' do
   end
 
   it 'gets a push with 1 commit, where the author has NOT agreed, and marks the commit as failure' do
+    mock_github_repo_not_collaborator(oauth_token: token, owner: 'jasonm', repo: 'mangostickyrice', user: 'jasonm')
     user = create(:user, email: 'jason@gmail.com', nickname: 'jasonm', oauth_token: token)
     agreement = create(:agreement, user: user, repo_name: 'mangostickyrice')
 
@@ -64,6 +66,8 @@ describe 'receiving github repo webhook callbacks' do
   end
 
   it 'gets a push, where the author has agreed but the committer has NOT agreed, and marks the commit as failure' do
+    mock_github_repo_not_collaborator(oauth_token: token, owner: 'jasonm', repo: 'mangostickyrice', user: 'jasonm')
+    mock_github_repo_not_collaborator(oauth_token: token, owner: 'jasonm', repo: 'mangostickyrice', user: 'the-committer')
     author = create(:user, email: 'jasonm@gmail.com', nickname: 'jasonm', oauth_token: token)
     committer = create(:user, email: 'committer@gmail.com', nickname: 'the-committer', oauth_token: token)
     agreement = create(:agreement, user: author, repo_name: 'mangostickyrice')
@@ -90,6 +94,8 @@ describe 'receiving github repo webhook callbacks' do
   end
 
   it 'gets a push, where the author and committer both agreed, and marks the commit as success' do
+    mock_github_repo_not_collaborator(oauth_token: token, owner: 'jasonm', repo: 'mangostickyrice', user: 'jasonm')
+    mock_github_repo_not_collaborator(oauth_token: token, owner: 'jasonm', repo: 'mangostickyrice', user: 'the-committer')
     author = create(:user, email: 'jasonm@gmail.com', nickname: 'jasonm', oauth_token: token)
     committer = create(:user, email: 'committer@gmail.com', nickname: 'the-committer', oauth_token: token)
     agreement = create(:agreement, user: author, repo_name: 'mangostickyrice')
@@ -110,6 +116,33 @@ describe 'receiving github repo webhook callbacks' do
     status_params = {
       state: 'success',
       target_url: "#{HOST}/agreements/jasonm/mangostickyrice",
+      description: 'All contributors have signed the Contributor License Agreement.',
+      context: "clahub"
+    }
+    expect(a_request(:post, status_url).with(body: status_params.to_json)).to have_been_made
+  end
+
+  it 'gets a push, where the author is a collaborator and marks the commit as success' do
+    author = create(:user, email: 'ryan@strongloop.com', nickname: 'rmg', oauth_token: token)
+    agreement = create(:agreement, user: author, repo_name: 'mangostickyrice')
+    mock_github_repo_collaborator(oauth_token: token, owner: 'rmg', repo: 'mangostickyrice', user: 'rmg')
+    mock_github_set_commit_status(oauth_token: token, user_name: 'rmg', repo_name: 'mangostickyrice', sha: 'aaa111')
+    expect(Signature.all).to be_empty
+
+    payload = {
+      repository: { name: 'mangostickyrice', owner: { name: 'rmg', email: 'ryan@strongloop.com' } },
+      commits: [ {
+        id: 'aaa111',
+        author: { name: 'Author', username: 'rmg', email: 'ryan@strongloop.com' },
+        committer: { name: 'Committer', username: 'rmg', email: 'ryan@strongloop.com' }
+      } ]
+    }
+    post '/repo_hook', { payload: payload.to_json }, 'HTTP_X_GITHUB_EVENT' => 'push'
+
+    status_url = "https://api.github.com/repos/rmg/mangostickyrice/statuses/aaa111?access_token=#{token}"
+    status_params = {
+      state: 'success',
+      target_url: "#{HOST}/agreements/rmg/mangostickyrice",
       description: 'All contributors have signed the Contributor License Agreement.',
       context: "clahub"
     }

@@ -21,6 +21,7 @@ feature "Agreeing to a CLA" do
 
   scenario "Allow a user to sign in with GitHub and agree to a CLA" do
     mock_github_limited_oauth(info: { nickname: 'jasonm' })
+    mock_github_repo_not_collaborator(owner: 'the_owner', repo: 'the_project', user: 'jasonm')
     visit '/agreements/the_owner/the_project'
     click_link 'Sign in with GitHub to agree to this CLA'
 
@@ -43,6 +44,7 @@ feature "Agreeing to a CLA" do
     agreement.save
 
     mock_github_limited_oauth(info: { nickname: 'jasonm' })
+    mock_github_repo_not_collaborator(owner: 'the_owner', repo: 'the_project', user: 'jasonm')
     visit '/agreements/the_owner/the_project'
     click_link 'Sign in with GitHub to agree to this CLA'
 
@@ -64,6 +66,7 @@ feature "Agreeing to a CLA" do
 
   scenario "Do not allow me to agree twice" do
     mock_github_limited_oauth(info: { nickname: 'jasonm' })
+    mock_github_repo_not_collaborator(owner: 'the_owner', repo: 'the_project', user: 'jasonm')
     visit '/agreements/the_owner/the_project'
     click_link 'Sign in with GitHub to agree to this CLA'
 
@@ -89,6 +92,13 @@ feature "Agreeing to a CLA" do
         { name: 'beta',  id: 456, owner: { login: 'the_owner' } }
       ]
     )
+
+    mock_github_repo_not_collaborator(oauth_token: oauth_token_for('the_owner'),
+      owner: 'the_owner', repo: 'alpha', user: 'carlisle_contributor')
+    mock_github_repo_not_collaborator(oauth_token: oauth_token_for('the_owner'),
+      owner: 'the_owner', repo: 'beta', user: 'carlisle_contributor')
+    mock_github_repo_not_collaborator(oauth_token: oauth_token_for('the_owner'),
+      owner: 'the_owner', repo: 'beta', user: 'caterina_committer')
 
     mock_github_open_pulls(owner: 'the_owner', repo: 'alpha', pull_ids: [1, 2])
     mock_github_open_pulls(owner: 'the_owner', repo: 'beta',  pull_ids: [1])
@@ -157,6 +167,7 @@ feature "Agreeing to a CLA" do
 
     github_uid ||= github_uid_for_nickname(contributor_nickname)
     mock_github_limited_oauth(info: { nickname: contributor_nickname }, uid: github_uid)
+    mock_github_repo_not_collaborator(owner: repo_owner, repo: repo_name, user: contributor_nickname)
 
     visit '/sign_out'
     visit "/agreements/#{repo_owner}/#{repo_name}"
