@@ -69,7 +69,9 @@ class AgreementsController < ApplicationController
 
   def repos_for_current_user
     DevModeCache.cache("repos-for-#{current_user.uid}") do
-      GithubRepos.new(current_user).repos
+      GithubRepos.new(current_user).repos.select { |repo|
+        ALLOWED_ORGS.empty? || ALLOWED_ORGS.include?(repo.owner.login)
+      }
     end
   end
 end

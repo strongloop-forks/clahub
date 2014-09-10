@@ -9,6 +9,7 @@ require 'rspec/autorun'
 require 'webmock/rspec'
 
 ADMIN_REPO = false
+ALLOWED_ORGS = []
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
