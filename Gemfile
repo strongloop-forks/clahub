@@ -6,7 +6,7 @@ gem 'rails', '3.2.19'
 
 gem 'pg'
 gem 'jquery-rails'
-gem 'thin'
+gem 'puma'
 gem 'bootstrap-sass', "~> 2.0"
 gem 'sass', "~> 3.2.0"
 gem 'chosen-rails'
