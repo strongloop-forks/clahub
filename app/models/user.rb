@@ -16,4 +16,13 @@ class User < ActiveRecord::Base
   def self.find_by_email_or_nickname(email, nickname)
     self.where("email = ? OR nickname = ?", email, nickname).first
   end
+
+  def can_create_agreements?
+    if ADMIN_REPO
+      owner, repo = ADMIN_REPO.split '/'
+      GithubRepos.new(self).collaborator?(owner, repo, self)
+    else
+      true
+    end
+  end
 end

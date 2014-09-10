@@ -1,21 +1,4 @@
 <div class="row">
-  <h2>Agreements you have created:</h2>
-  <% if @agreements.any? %>
-    <ul>
-      <% @agreements.each do |agreement| %>
-        <li>
-          <%= link_to agreement_path(agreement.user_name, agreement.repo_name) do %>
-            <%= agreement.user_name %>/<%= agreement.repo_name %>
-          <% end %>
-        </li>
-      <% end %>
-    </ul>
-  <% else %>
-    <p>You haven't created any agreements.</p>
-  <% end %>
-</div>
-
-<div class="row">
   <h2>Agreements you have signed:</h2>
   <% if @signatures.any? %>
     <ul>
@@ -33,6 +16,22 @@
   <% end %>
 </div>
 
-<div class="row form-actions">
-  <p><%= link_to "Create a new agreement", "/auth/github", class: 'btn btn-primary' %></p>
-</div>
+<% if current_user.can_create_agreements? %>
+  <div class="row">
+    <h2>Agreements you have created:</h2>
+    <% if @agreements.any? %>
+      <ul>
+        <% @agreements.each do |agreement| %>
+          <li>
+            <%= link_to agreement_path(agreement.user_name, agreement.repo_name) do %>
+              <%= agreement.user_name %>/<%= agreement.repo_name %>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    <% else %>
+      <p>You haven't created any agreements.</p>
+    <% end %>
+    <p><%= link_to "Create a new agreement", "/auth/github", class: 'btn btn-primary' %></p>
+  </div>
+<% end %>
