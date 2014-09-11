@@ -18,3 +18,7 @@
 ].each do |label, enabled_by_default, data_type, description|
   Field.find_or_create_by_label_and_enabled_by_default_and_data_type_and_description(label, enabled_by_default, data_type, description)
 end
+
+if ENV['CLAHUB_EXTRA_SEEDS'] && ENV['RAILS_ENV'] != 'test'
+  load ENV['CLAHUB_EXTRA_SEEDS']
+end
