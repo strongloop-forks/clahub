@@ -1,12 +1,13 @@
 <div>
+  <h1>StrongLoop Contributor License Agreements</h1>
   <%= image_tag 'node-expertise.png', class: 'logo' %>
-  <h3>
-    Thank you for your interest in contributing to one of the open source
-    projects administered by StrongLoop.
-  </h3>
   <% if signed_in? %>
     <%= link_to 'My agreements and signatures', agreements_path, class: 'btn btn-success btn-large' %>
   <% else %>
+    <h3>
+      Thank you for your interest in contributing to open source projects
+      administered by StrongLoop.
+    </h3>
     <p><a class="btn btn-primary btn-large" href="/auth/github">Sign in with GitHub to get started &raquo;</a></p>
   <% end %>
 </div>
