@@ -15,6 +15,7 @@ if defined?(Bundler)
   # Bundler.require(:default, :assets, Rails.env)
 end
 
+require_relative "../lib/dev_mode_cache.rb"
 require_relative "../lib/github_repos.rb"
 
 module Clahub
