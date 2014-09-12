@@ -66,6 +66,9 @@ module Clahub
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
 
+    # Allow compiled assets to be cached
+    config.static_cache_control = "public, max-age=31536000"
+
     config.threadsafe!
   end
 end
