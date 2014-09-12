@@ -4,10 +4,10 @@
   <% if signed_in? %>
     <%= link_to 'My agreements and signatures', agreements_path, class: 'btn btn-success btn-large' %>
   <% else %>
-    <h3>
+    <h4>
       Thank you for your interest in contributing to open source projects
       administered by StrongLoop.
-    </h3>
+    </h4>
     <p><a class="btn btn-primary btn-large" href="/auth/github">Sign in with GitHub to get started &raquo;</a></p>
   <% end %>
 </div>
