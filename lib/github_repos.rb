@@ -1,6 +1,16 @@
 class GithubRepos
   REPOS_PER_PAGE = 100 # the max
 
+  def error_response(pattern)
+    m = Module.new
+    (class << m; self; end).instance_eval do
+      define_method(:===) do |e|
+        pattern === e.message
+      end
+    end
+    m
+  end
+
   def initialize(user)
     @github ||= Github.new(oauth_token: user.oauth_token, auto_pagination: true)
   end
@@ -10,7 +20,13 @@ class GithubRepos
   end
 
   def create_hook(user_name, repo_name, hook_inputs)
-    @github.repos.hooks.create(user_name, repo_name, hook_inputs)
+    begin
+      @github.repos.hooks.create(user_name, repo_name, hook_inputs)
+    rescue error_response(/422 Hook already exists on this repository/)
+      @github.repos.hooks.list(user_name, repo_name).find { |h|
+        h.name == hook_inputs['name'] and h.config == hook_inputs['config']
+      }
+    end
   end
 
   def delete_hook(user_name, repo_name, hook_id)
