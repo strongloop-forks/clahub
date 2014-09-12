@@ -15,6 +15,8 @@ if defined?(Bundler)
   # Bundler.require(:default, :assets, Rails.env)
 end
 
+require_relative "../lib/github_repos.rb"
+
 module Clahub
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
