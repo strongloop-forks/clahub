@@ -23,8 +23,11 @@ class Agreement < ActiveRecord::Base
       }
     }
 
-    response = GithubRepos.new(self.user).create_hook(user_name, repo_name, hook_inputs)
-
+    response = if github_repo_hook_id.nil?
+      GithubRepos.new(self.user).create_hook(user_name, repo_name, hook_inputs)
+    else
+      GithubRepos.new(self.user).edit_hook(user_name, repo_name, github_repo_hook_id, hook_inputs)
+    end
     self.update_attribute(:github_repo_hook_id, response['id'])
   end
 
