@@ -48,6 +48,8 @@ repos.map { |repo|
                          repo_name: repo.name)
                   .first_or_create(AGREEMENT_TEMPLATE)
 }.each do |agreement|
+  agreement.create_github_repo_hook
+  agreement.check_open_pulls
   result = agreement.save
   puts "#{agreement.user_name}/#{agreement.repo_name} => #{result}"
 end.tap { |all| p "Total: #{all.count}" }
