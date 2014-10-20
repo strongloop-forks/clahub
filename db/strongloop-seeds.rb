@@ -32,12 +32,19 @@ else
   puts "Created owner: #{owner.inspect}"
 end
 
+EXCLUDED_REPOS = [
+  'express',
+  'expressjs.com',
+  'strong-agent',
+  'gulp-loopback-sdk-angular',
+]
+
 repos = gh.repos
           .list(org: 'strongloop')
           .reject(&:private?)
           .reject(&:fork?)
           .reject { |r|
-            if r.name =~ /express/ or r.name == 'strong-agent'
+            if EXCLUDED_REPOS.include? r.name
               puts "Excluded: #{r.full_name}"
               true
             end
