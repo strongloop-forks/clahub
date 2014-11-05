@@ -25,4 +25,8 @@ class User < ActiveRecord::Base
       true
     end
   end
+
+  def is_collaborator?(user_name, repo_name)
+    ::GithubRepos.new(self).collaborator?(user_name, repo_name, self) rescue false
+  end
 end

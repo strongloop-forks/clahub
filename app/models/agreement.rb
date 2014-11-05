@@ -51,6 +51,10 @@ class Agreement < ActiveRecord::Base
     signing_users.include?(candidate)
   end
 
+  def collaborator?(candidate)
+    candidate && candidate.is_collaborator?(user_name, repo_name)
+  end
+
   def check_open_pulls
     # TODO: async this so that creating a signature doesn't take so long.
     CheckOpenPullsJob.new(owner: user, user_name: user_name, repo_name: repo_name).run
