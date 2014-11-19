@@ -20,7 +20,7 @@ class GithubRepos
   end
 
   def collaborator?(user_name, repo_name, user)
-    @github.repos.collaborators.collaborator?(user_name, repo_name, user.nickname)
+    @github.repos.collaborators.collaborator?(user_name, repo_name, user.nickname) rescue false
   end
 
   def create_hook(user_name, repo_name, hook_inputs)
