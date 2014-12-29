@@ -1,7 +1,11 @@
 class AgreementsController < ApplicationController
   def index
-    @agreements = current_user.agreements
-    @signatures = current_user.signatures
+    if signed_out?
+      redirect_to home_url
+    else
+      @agreements = current_user.agreements
+      @signatures = current_user.signatures
+    end
   end
 
   def new
