@@ -112,10 +112,12 @@ feature "Creating a CLA for a repo" do
       'name' => 'web',
       'config' => {
         'url' => "#{HOST}/repo_hook"
-      }
+      },
+      'events' => ["push"],
+      'active' => true,
     }
 
-    a_request(:post, "https://api.github.com/repos/my-adminned-org/chi/hooks?access_token=#{token}").with(body: inputs.to_json).should have_been_made
+    a_request(:post, "https://api.github.com/repos/my-adminned-org/chi/hooks").with(body: inputs.as_json, headers: { 'Authorization' => "token #{token}"} ).should have_been_made
 
     expect(Agreement.last.github_repo_hook_id).to eq(resulting_github_repo_hook_id)
   end
@@ -132,11 +134,13 @@ feature "Creating a CLA for a repo" do
     inputs = {
       'name' => 'web',
       'config' => {
-        'url' => "#{HOST}/repo_hook"
-      }
+        'url' => "#{HOST}/repo_hook",
+      },
+      'events' => ["push"],
+      'active' => true,
     }
 
-    a_request(:post, "https://api.github.com/repos/jasonm/beta/hooks?access_token=#{token}").with(body: inputs.to_json).should have_been_made
+    a_request(:post, "https://api.github.com/repos/jasonm/beta/hooks").with(body: inputs.as_json, headers: { 'Authorization' => "token #{token}" }).should have_been_made
 
     expect(Agreement.last.github_repo_hook_id).to eq(resulting_github_repo_hook_id)
   end

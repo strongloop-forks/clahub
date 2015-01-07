@@ -43,4 +43,20 @@ describe User do
     expect(User.find_by_email_or_nickname('alice@email.com', nil)).to eq(alice)
     expect(User.find_by_email_or_nickname(nil, 'nunchuks')).to eq(nil)
   end
+
+  describe "collaborator status" do
+    let(:user) { create(:user, email: 'user@email.com', nickname: 'user') }
+    it "knows if it is a collaborator on a repo" do
+      stub_request(:get, "https://api.github.com/repos/some/repo/collaborators/user")
+        .with(:headers => {'Authorization' => "token #{user.oauth_token}" })
+        .to_return(:status => 204, :body => "", :headers => {})
+      expect(user.is_collaborator?('some', 'repo')).to eq(true)
+    end
+    it "knows if it is NOT a collaborator on a repo" do
+      stub_request(:get, "https://api.github.com/repos/some/repo/collaborators/user")
+        .with(:headers => {'Authorization' => "token #{user.oauth_token}" })
+        .to_return(:status => 404, :body => "", :headers => {})
+      expect(user.is_collaborator?('some', 'repo')).to eq(false)
+    end
+  end
 end

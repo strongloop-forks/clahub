@@ -149,7 +149,7 @@ feature "Agreeing to a CLA" do
     raise "no agreement made for repo" unless agreement = Agreement.find_by_user_name_and_repo_name(user_name, repo_name)
     raise "no oauth token for creator" unless oauth_token = agreement.user.oauth_token
 
-    status_url = "https://api.github.com/repos/#{user_name}/#{repo_name}/statuses/#{sha}?access_token=#{oauth_token}"
+    status_url = "https://api.github.com/repos/#{user_name}/#{repo_name}/statuses/#{sha}"
     status_params = {
       state: status,
       target_url: "#{HOST}/agreements/#{user_name}/#{repo_name}",
@@ -157,7 +157,7 @@ feature "Agreeing to a CLA" do
       context: "clahub"
     }
 
-    expect(a_request(:post, status_url).with(body: status_params.to_json)).to have_been_made
+    expect(a_request(:post, status_url).with(body: status_params.as_json, headers: { 'Authorization' => "token #{oauth_token}" })).to have_been_made
   end
 
   def sign_agreement(repo_owner, repo_name, contributor_nickname)

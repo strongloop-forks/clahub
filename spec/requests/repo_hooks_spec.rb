@@ -34,14 +34,14 @@ describe 'receiving github repo webhook callbacks' do
     }
     post '/repo_hook', { payload: payload.to_json }, 'HTTP_X_GITHUB_EVENT' => 'push'
 
-    status_url = "https://api.github.com/repos/jasonm/mangostickyrice/statuses/aaa111?access_token=#{token}"
+    status_url = "https://api.github.com/repos/jasonm/mangostickyrice/statuses/aaa111"
     status_params = {
       state: 'success',
       target_url: "#{HOST}/agreements/jasonm/mangostickyrice",
       description: 'All contributors have signed the Contributor License Agreement.',
       context: "clahub"
     }
-    expect(a_request(:post, status_url).with(body: status_params.to_json)).to have_been_made
+    expect(a_request(:post, status_url).with(body: status_params.as_json, headers: { 'Authorization' => "token #{token}", 'Content-Type' => 'application/json' })).to have_been_made
   end
 
   it 'gets a push with 1 commit, where the author has NOT agreed, and marks the commit as failure' do
@@ -55,14 +55,14 @@ describe 'receiving github repo webhook callbacks' do
     }
     post '/repo_hook', { payload: payload.to_json }, 'HTTP_X_GITHUB_EVENT' => 'push'
 
-    status_url = "https://api.github.com/repos/jasonm/mangostickyrice/statuses/aaa111?access_token=#{token}"
+    status_url = "https://api.github.com/repos/jasonm/mangostickyrice/statuses/aaa111"
     status_params = {
       state: 'failure',
       target_url: "#{HOST}/agreements/jasonm/mangostickyrice",
       description: 'Not all contributors have signed the Contributor License Agreement.',
       context: "clahub"
     }
-    expect(a_request(:post, status_url).with(body: status_params.to_json)).to have_been_made
+    expect(a_request(:post, status_url).with(body: status_params.as_json, headers: { 'Authorization' => "token #{token}" })).to have_been_made
   end
 
   it 'gets a push, where the author has agreed but the committer has NOT agreed, and marks the commit as failure' do
@@ -83,14 +83,14 @@ describe 'receiving github repo webhook callbacks' do
     }
     post '/repo_hook', { payload: payload.to_json }, 'HTTP_X_GITHUB_EVENT' => 'push'
 
-    status_url = "https://api.github.com/repos/jasonm/mangostickyrice/statuses/aaa111?access_token=#{token}"
+    status_url = "https://api.github.com/repos/jasonm/mangostickyrice/statuses/aaa111"
     status_params = {
       state: 'failure',
       target_url: "#{HOST}/agreements/jasonm/mangostickyrice",
       description: 'Not all contributors have signed the Contributor License Agreement.',
       context: "clahub"
     }
-    expect(a_request(:post, status_url).with(body: status_params.to_json)).to have_been_made
+    expect(a_request(:post, status_url).with(body: status_params.as_json, headers: { 'Authorization' => "token #{token}" })).to have_been_made
   end
 
   it 'gets a push, where the author and committer both agreed, and marks the commit as success' do
@@ -112,14 +112,14 @@ describe 'receiving github repo webhook callbacks' do
     }
     post '/repo_hook', { payload: payload.to_json }, 'HTTP_X_GITHUB_EVENT' => 'push'
 
-    status_url = "https://api.github.com/repos/jasonm/mangostickyrice/statuses/aaa111?access_token=#{token}"
+    status_url = "https://api.github.com/repos/jasonm/mangostickyrice/statuses/aaa111"
     status_params = {
       state: 'success',
       target_url: "#{HOST}/agreements/jasonm/mangostickyrice",
       description: 'All contributors have signed the Contributor License Agreement.',
       context: "clahub"
     }
-    expect(a_request(:post, status_url).with(body: status_params.to_json)).to have_been_made
+    expect(a_request(:post, status_url).with(body: status_params.as_json, headers: { 'Authorization' => "token #{token}" })).to have_been_made
   end
 
   it 'gets a push, where the author is a collaborator and marks the commit as success' do
@@ -139,14 +139,14 @@ describe 'receiving github repo webhook callbacks' do
     }
     post '/repo_hook', { payload: payload.to_json }, 'HTTP_X_GITHUB_EVENT' => 'push'
 
-    status_url = "https://api.github.com/repos/rmg/mangostickyrice/statuses/aaa111?access_token=#{token}"
+    status_url = "https://api.github.com/repos/rmg/mangostickyrice/statuses/aaa111"
     status_params = {
       state: 'success',
       target_url: "#{HOST}/agreements/rmg/mangostickyrice",
       description: 'All contributors have signed the Contributor License Agreement.',
       context: "clahub"
     }
-    expect(a_request(:post, status_url).with(body: status_params.to_json)).to have_been_made
+    expect(a_request(:post, status_url).with(body: status_params.as_json, headers: { 'Authorization' => "token #{token}" })).to have_been_made
   end
 
   it 'gets a push with many commits, where the single author has agreed, and marks all commits as success'

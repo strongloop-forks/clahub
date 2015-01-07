@@ -34,8 +34,8 @@ class PushStatusChecker
   def mark(commit, state)
     target_url = "#{HOST}/agreements/#{@push.user_name}/#{@push.repo_name}"
 
-    GithubRepos.new(repo_agreement.user).set_status(@push.user_name, @push.repo_name, sha = commit.id, {
-      state: state,
+    GithubRepos.new(repo_agreement.user).set_status(@push.user_name, @push.repo_name, sha = commit.id, state, {
+      # state: state,
       target_url: target_url,
       description: STATUS_DESCRIPTIONS[state],
       context: "clahub"

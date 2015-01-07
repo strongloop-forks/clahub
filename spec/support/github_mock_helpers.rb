@@ -32,15 +32,18 @@ module GithubMockHelpers
     assert_options(options, :oauth_token, :repos)
 
     json_response = options[:repos].to_json
-    stub_request(:get, "https://api.github.com/user/repos?access_token=#{options[:oauth_token]}&per_page=100").to_return(status: 200, body: json_response)
+    stub_request(:get, "https://api.github.com/user/repos")
+      .with(headers: { 'Authorization' => "token #{options[:oauth_token]}" })
+      .to_return(status: 200, body: json_response, headers: { 'Content-Type' => 'application/vnd.github.v3+json' })
   end
 
   def mock_github_repo_hook(options={})
     assert_options(options, :oauth_token, :user_name, :repo_name, :resulting_hook_id)
 
     json_response = { url: 'http://something', id: options[:resulting_hook_id] }.to_json
-    stub_request(:post, "https://api.github.com/repos/#{options[:user_name]}/#{options[:repo_name]}/hooks?access_token=#{options[:oauth_token]}").
-      to_return(status: 201, body: json_response)
+    stub_request(:post, "https://api.github.com/repos/#{options[:user_name]}/#{options[:repo_name]}/hooks")
+      .with(headers: { 'Authorization' => "token #{options[:oauth_token]}" })
+      .to_return(status: 201, body: json_response, headers: { 'Content-Type' => 'application/vnd.github.v3+json' })
   end
 
   def mock_github_set_commit_status(options={})
@@ -48,8 +51,10 @@ module GithubMockHelpers
     options[:oauth_token] ||= oauth_token_for(options[:user_name])
 
     json_response = options[:json_response] || { whatever: 'yeah' }.to_json
-    url = "https://api.github.com/repos/#{options[:user_name]}/#{options[:repo_name]}/statuses/#{options[:sha]}?access_token=#{options[:oauth_token]}"
-    stub_request(:post, url).to_return(status: 201, body: json_response)
+    url = "https://api.github.com/repos/#{options[:user_name]}/#{options[:repo_name]}/statuses/#{options[:sha]}"
+    stub_request(:post, url)
+    .with(headers: { 'Authorization' => "token #{options[:oauth_token]}" })
+    .to_return(status: 201, body: json_response, headers: { 'Content-Type' => 'application/vnd.github.v3+json' })
   end
 
   # TODO refactor other mocks and default oauth_token based on owner/user_name where appropriate
@@ -62,8 +67,11 @@ module GithubMockHelpers
     }
 
     json_response = attributes_for_open_pulls.to_json
-    url = "https://api.github.com/repos/#{options[:owner]}/#{options[:repo]}/pulls?access_token=#{options[:oauth_token]}"
-    stub_request(:get, url).to_return(status: 200, body: json_response)
+    url = "https://api.github.com/repos/#{options[:owner]}/#{options[:repo]}/pulls"
+    stub_request(:get, url)
+      .with(headers: { 'Authorization' => "token #{options[:oauth_token]}" })
+      .to_return(status: 200, body: json_response,
+      headers: { 'Content-Type' => 'application/vnd.github.v3+json' })
   end
 
   # options[:commits] is an array of hashes,
@@ -74,8 +82,11 @@ module GithubMockHelpers
     options[:oauth_token] ||= oauth_token_for(options[:owner])
 
     json_response = options[:commits].to_json
-    url = "https://api.github.com/repos/#{options[:owner]}/#{options[:repo]}/pulls/#{options[:pull_id]}/commits?access_token=#{options[:oauth_token]}"
-    stub_request(:get, url).to_return(status: 200, body: json_response)
+    url = "https://api.github.com/repos/#{options[:owner]}/#{options[:repo]}/pulls/#{options[:pull_id]}/commits"
+    stub_request(:get, url)
+      .with(headers: { 'Authorization' => "token #{options[:oauth_token]}" })
+      .to_return(status: 200, body: json_response,
+      headers: { 'Content-Type' => 'application/vnd.github.v3+json' })
   end
 
   def mock_github_repo_collaborator(options = {})
@@ -84,8 +95,15 @@ module GithubMockHelpers
     set_default_github_oauth_options(options)
 
     json_response = options[:commits].to_json
-    url = "https://api.github.com/repos/#{options[:owner]}/#{options[:repo]}/collaborators/#{options[:user]}?access_token=#{options[:oauth_token]}"
-    stub_request(:get, url).to_return(status: 204)
+    url = "https://api.github.com/repos/#{options[:owner]}/#{options[:repo]}/collaborators/#{options[:user]}" #{}"?access_token=#{options[:oauth_token]}"
+    # stub_request(:get, "https://api.github.com/user/repos")
+    #   .with(headers: {
+    #     'Authorization'=> "token #{options[:oauth_token]}",
+    #   })
+    #   .to_return(status: 200, body: "[]", headers: {})
+    stub_request(:get, url)
+      .with(headers: { 'Authorization' => "token #{options[:oauth_token]}" })
+      .to_return(status: 204)
   end
 
   def mock_github_repo_not_collaborator(options = {})
@@ -95,8 +113,19 @@ module GithubMockHelpers
     #||= oauth_token_for(options[:user])
 
     json_response = options[:commits].to_json
-    url = "https://api.github.com/repos/#{options[:owner]}/#{options[:repo]}/collaborators/#{options[:user]}?access_token=#{options[:oauth_token]}"
-    stub_request(:get, url).to_return(status: 404)
+    url = "https://api.github.com/repos/#{options[:owner]}/#{options[:repo]}/collaborators/#{options[:user]}" #{}"?access_token=#{options[:oauth_token]}"
+    # stub_request(:get, "https://api.github.com/user/repos")
+    #   .with(headers: {
+    #     # 'Accept'=> 'application/vnd.github.v3+json',
+    #     # 'Accept-Encoding'=> 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+    #     'Authorization'=> "token #{options[:oauth_token]}",
+    #     # 'Content-Type'=> 'application/json',
+    #     # 'User-Agent'=> 'Octokit Ruby Gem 3.7.0'
+    #   })
+    #   .to_return(status: 200, body: "[]", headers: {})
+    stub_request(:get, url)
+      .with(headers: { 'Authorization' => "token #{options[:oauth_token]}" })
+      .to_return(status: 404)
   end
 
   def mock_github_user_orgs(options = {})
@@ -104,8 +133,10 @@ module GithubMockHelpers
     assert_options_array(options[:orgs], :login)
 
     json_response = options[:orgs].to_json
-    url = "https://api.github.com/user/orgs?access_token=#{options[:oauth_token]}"
-    stub_request(:get, url).to_return(status: 200, body: json_response)
+    url = "https://api.github.com/user/orgs"
+    stub_request(:get, url)
+      .with(headers: { 'Authorization' => "token #{options[:oauth_token]}" })
+      .to_return(status: 200, body: json_response, headers: { 'Content-Type' => 'application/vnd.github.v3+json' })
   end
 
   def mock_github_org_repos(options = {})
@@ -113,8 +144,10 @@ module GithubMockHelpers
     assert_options_array(options[:repos], :name, :permissions)
 
     json_response = options[:repos].to_json
-    url = "https://api.github.com/orgs/#{options[:org]}/repos?access_token=#{options[:oauth_token]}&per_page=100"
-    stub_request(:get, url).to_return(status: 200, body: json_response)
+    url = "https://api.github.com/users/#{options[:org]}/repos"
+    stub_request(:get, url)
+      .with(headers: { 'Authorization' => "token #{options[:oauth_token]}" })
+      .to_return(status: 200, body: json_response, headers: { 'Content-Type' => 'application/vnd.github.v3+json' })
   end
 
   def github_uid_for_nickname(nickname)
