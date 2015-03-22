@@ -35,6 +35,7 @@ end
 EXCLUDED_REPOS = [
   'express',
   'expressjs.com',
+  'fsevents',
   'strong-agent',
   'gulp-loopback-sdk-angular',
 ]
