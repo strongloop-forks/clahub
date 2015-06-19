@@ -37,6 +37,10 @@ class GithubRepos
     @github.repos.hooks.edit(user_name, repo_name, id, hook_inputs)
   end
 
+  def get_hook(user_name, repo_name, id)
+    @github.repos.hooks.fetch(user_name, repo_name, id) rescue nil
+  end
+
   def delete_hook(user_name, repo_name, hook_id)
     @github.repos.hooks.delete(user_name, repo_name, hook_id)
   end
