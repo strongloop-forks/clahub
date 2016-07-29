@@ -103,7 +103,10 @@ class CommitGroup
       contributors << author
     end
 
-    if commit.committer
+    # As per https://github.com/web-flow - any edits made via the github.com web UI
+    # will have the committer set to 'web-flow', who is a bot that will never sign
+    # a CLA and should really just be completely ignored.
+    if commit.committer and commit.committer.username != 'web-flow'
       committer_email = commit.committer.email
       committer_username = commit.committer.username
       committer = User.find_by_email_or_nickname(committer_email, committer_username)
